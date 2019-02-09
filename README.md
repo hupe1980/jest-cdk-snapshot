@@ -13,7 +13,7 @@ npm install --save-dev @cloudcomponents/jest-cdk-snapshot
 1. Extend Jest's `expect`
 
 ```javascript
-const { toMatchCdkSnapshot } = require('@cloudcomponents/jest-cdk-snapshot');
+import { toMatchCdkSnapshot } from '@cloudcomponents/jest-cdk-snapshot';
 
 expect.extend({ toMatchCdkSnapshot });
 ```

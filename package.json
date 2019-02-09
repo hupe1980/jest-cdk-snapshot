@@ -1,6 +1,6 @@
 {
   "name": "@cloudcomponents/jest-cdk-snapshot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Jest matcher for cdk cloudformation comparisons.",
   "license": "MIT",
   "author": "hello@webappsolutions.de",
@@ -26,7 +26,7 @@
     "lib"
   ],
   "dependencies": {
-    "@aws-cdk/assert": "^0.24.1",
+    "@aws-cdk/cdk": "0.24.1",
     "jest-snapshot": "^24.1.0"
   },
   "devDependencies": {

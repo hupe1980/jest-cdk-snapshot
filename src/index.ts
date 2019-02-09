@@ -1,4 +1,3 @@
-import { StackInspector } from '@aws-cdk/assert';
 import { Stack } from '@aws-cdk/cdk';
 import { toMatchSnapshot } from 'jest-snapshot';
 
@@ -29,18 +28,5 @@ const convertStack = (stack: Stack) => {
     );
   }
 
-  const sstack = {
-    name: stack.name,
-    template: stack.toCloudFormation(),
-    metadata: {},
-    environment: {
-      name: 'test',
-      account: 'test',
-      region: 'test'
-    }
-  };
-
-  const stackInspector = new StackInspector(sstack);
-
-  return stackInspector.value;
+  return stack.toCloudFormation();
 };
