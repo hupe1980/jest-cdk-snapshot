@@ -1,6 +1,6 @@
 {
   "name": "@cloudcomponents/jest-cdk-snapshot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Jest matcher for cdk cloudformation comparisons.",
   "license": "MIT",
   "author": "hello@webappsolutions.de",
@@ -19,21 +19,23 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "rimraf lib && tsc",
+    "watch": "rimraf lib && tsc -w",
+    "prepare": "npm run build"
   },
   "files": [
     "lib"
   ],
   "dependencies": {
-    "jest-snapshot": "24.1.0"
+    "jest-snapshot": "24.8.0"
   },
   "peerDependencies": {
-    "@aws-cdk/cdk": ">=0.25.1"
+    "@aws-cdk/core": ">=1.0.0"
   },
   "devDependencies": {
-    "@aws-cdk/cdk": "0.25.3",
-    "@types/jest": "24.0.11",
-    "typescript": "3.3.3333"
+    "@aws-cdk/core": "1.0.0",
+    "@types/jest": "24.0.15",
+    "rimraf": "^2.6.3",
+    "typescript": "3.5.3"
   }
 }

@@ -1,4 +1,4 @@
-import { Stack } from '@aws-cdk/cdk';
+import { ConstructNode, Stack, SynthesisOptions } from '@aws-cdk/core';
 import { toMatchSnapshot } from 'jest-snapshot';
 
 declare global {
@@ -9,24 +9,18 @@ declare global {
   }
 }
 
-export const toMatchCdkSnapshot: jest.CustomMatcher = function(
-  received: Stack
+export const toMatchCdkSnapshot = function(
+  this: any,
+  received: Stack,
+  options: SynthesisOptions = {}
 ) {
   const matcher = toMatchSnapshot.bind(this);
-  return matcher(convertStack(received));
+  return matcher(convertStack(received, options));
 };
 
-const convertStack = (stack: Stack) => {
-  stack.node.prepareTree();
-
-  const errors = stack.node.validateTree();
-  if (errors.length > 0) {
-    throw new Error(
-      `Stack validation failed:\n${errors
-        .map(e => `${e.message} at: ${e.source.node.scope}`)
-        .join('\n')}`
-    );
-  }
-
-  return stack.toCloudFormation();
+const convertStack = (stack: Stack, options: SynthesisOptions = {}) => {
+  const { root } = stack.node;
+  const assembly = ConstructNode.synth(root.node, options);
+  
+  return assembly.getStack(stack.stackName).template;
 };
