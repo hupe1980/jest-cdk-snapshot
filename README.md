@@ -21,7 +21,7 @@ expect.extend({ toMatchCdkSnapshot });
 2. Use `toMatchCdkSnapshot()` in your tests!
 
 ```javascript
-import { Stack } from '@aws-cdk/cdk';
+import { Stack } from '@aws-cdk/core';
 import { GithubWebhook } from '@cloudcomponents/cdk-github-webhook';
 
 describe('cdk-github-webhook', () => {
