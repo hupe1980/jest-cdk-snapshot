@@ -10,19 +10,10 @@ npm install --save-dev @cloudcomponents/jest-cdk-snapshot
 
 ## How to use
 
-1. Extend Jest's `expect`
-
-```javascript
-import { toMatchCdkSnapshot } from '@cloudcomponents/jest-cdk-snapshot';
-
-expect.extend({ toMatchCdkSnapshot });
-```
-
-2. Use `toMatchCdkSnapshot()` in your tests!
-
 ```javascript
 import { Stack } from '@aws-cdk/core';
 import { GithubWebhook } from '@cloudcomponents/cdk-github-webhook';
+import '@cloudcomponents/jest-cdk-snapshot';
 
 describe('cdk-github-webhook', () => {
   it('snapshot', () => {
@@ -39,3 +30,7 @@ describe('cdk-github-webhook', () => {
   });
 });
 ```
+
+## License
+
+[MIT](LICENSE)
