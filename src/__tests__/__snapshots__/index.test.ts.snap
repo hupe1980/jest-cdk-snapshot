@@ -11,3 +11,12 @@ Object {
   },
 }
 `;
+
+exports[`yaml setup 1`] = `
+"Resources:
+  FooDFE0DD70:
+    Type: 'AWS::S3::Bucket'
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+"
+`;

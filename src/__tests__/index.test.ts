@@ -9,4 +9,10 @@ test('default setup', () => {
     expect(stack).toMatchCdkSnapshot();
 });
 
+test('yaml setup', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Foo');
+
+  expect(stack).toMatchCdkSnapshot({ yaml: true });
+});
 

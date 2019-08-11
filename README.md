@@ -31,6 +31,29 @@ describe('cdk-github-webhook', () => {
 });
 ```
 
+## Use YAML as snaphsot format
+
+```javascript
+import { Stack } from '@aws-cdk/core';
+import { GithubWebhook } from '@cloudcomponents/cdk-github-webhook';
+import '@cloudcomponents/jest-cdk-snapshot';
+
+describe('cdk-github-webhook', () => {
+  it('snapshot', () => {
+    const stack = new Stack();
+
+    new GithubWebhook(stack, 'GithubWebhook', {
+      githubApiToken: 'test12',
+      githubRepoUrl: 'test',
+      payloadUrl: 'test',
+      events: ['test']
+    });
+
+    expect(stack).toMatchCdkSnapshot({ yaml: true });
+  });
+});
+```
+
 ## License
 
 [MIT](LICENSE)
