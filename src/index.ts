@@ -1,28 +1,39 @@
 import { ConstructNode, Stack, SynthesisOptions } from '@aws-cdk/core';
 import { toMatchSnapshot } from 'jest-snapshot';
+import * as jsYaml from 'js-yaml'
 
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toMatchCdkSnapshot(options?: SynthesisOptions): R;
+      toMatchCdkSnapshot(options?: Options): R;
     }
   }
 }
 
-export const toMatchCdkSnapshot = function(
+type Options = SynthesisOptions & {
+  /**
+   * Output snapshots in YAML (instead of JSON)
+   */
+  yaml?: boolean
+}
+
+const toMatchCdkSnapshot = function(
   this: any,
   received: Stack,
-  options: SynthesisOptions = {}
+  options: Options = {}
 ) {
   const matcher = toMatchSnapshot.bind(this);
   return matcher(convertStack(received, options));
 };
 
-const convertStack = (stack: Stack, options: SynthesisOptions = {}) => {
+const convertStack = (stack: Stack, options: Options = {}) => {
   const { root } = stack.node;
-  const assembly = ConstructNode.synth(root.node, options);
-  
-  return assembly.getStack(stack.stackName).template;
+  const { yaml, ...synthOptions } = options
+
+  const assembly = ConstructNode.synth(root.node, synthOptions);
+  const template = assembly.getStack(stack.stackName).template;
+
+  return yaml ? jsYaml.safeDump(template) : template
 };
 
 if (expect !== undefined) {
