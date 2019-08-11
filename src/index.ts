@@ -4,12 +4,12 @@ import { toMatchSnapshot } from 'jest-snapshot';
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toMatchCdkSnapshot(): R;
+      toMatchCdkSnapshot(options?: SynthesisOptions): R;
     }
   }
 }
 
-const toMatchCdkSnapshot = function(
+export const toMatchCdkSnapshot = function(
   this: any,
   received: Stack,
   options: SynthesisOptions = {}
@@ -34,8 +34,4 @@ if (expect !== undefined) {
     '\nPlease check you have added @cloudcomponents/jest-cdk-snapshot correctly.' +
     '\nSee https://github.com/cloudcomponents/jest-cdk-snapshot for help.'
   );
-}
-
-export {
-  toMatchCdkSnapshot,
 }
