@@ -31,7 +31,7 @@ describe('cdk-github-webhook', () => {
 });
 ```
 
-## Use YAML as snaphsot format
+## Use YAML as snapshot format
 
 ```javascript
 import { Stack } from '@aws-cdk/core';
