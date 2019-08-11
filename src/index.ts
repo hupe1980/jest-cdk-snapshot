@@ -17,7 +17,7 @@ type Options = SynthesisOptions & {
   yaml?: boolean
 }
 
-const toMatchCdkSnapshot = function(
+export const toMatchCdkSnapshot = function(
   this: any,
   received: Stack,
   options: Options = {}
