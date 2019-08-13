@@ -42,7 +42,7 @@ if (expect !== undefined) {
   /* eslint-disable-next-line no-console */
   console.error(
     "Unable to find Jest's global expect." +
-    '\nPlease check you have added @cloudcomponents/jest-cdk-snapshot correctly.' +
-    '\nSee https://github.com/cloudcomponents/jest-cdk-snapshot for help.'
+    '\nPlease check you have added jest-cdk-snapshot correctly.' +
+    '\nSee https://github.com/hupe1980/jest-cdk-snapshot for help.'
   );
 }
