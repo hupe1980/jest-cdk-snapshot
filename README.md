@@ -1,5 +1,7 @@
 # jest-cdk-snapshot
 
+[![Build Status](https://travis-ci.org/hupe1980/jest-cdk-snapshot.svg?branch=master)](https://travis-ci.org/hupe1980/jest-cdk-snapshot)
+
 > Jest matcher for cdk cloudformation comparisons.
 
 ## Install
