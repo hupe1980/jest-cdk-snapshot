@@ -1,33 +1,26 @@
-# @cloudcomponents/jest-cdk-snapshot
+# jest-cdk-snapshot
 
 > Jest matcher for cdk cloudformation comparisons.
 
 ## Install
 
 ```bash
-npm install --save-dev @cloudcomponents/jest-cdk-snapshot
+npm install --save-dev jest-cdk-snapshot
 ```
 
 ## How to use
 
 ```javascript
 import { Stack } from '@aws-cdk/core';
-import { GithubWebhook } from '@cloudcomponents/cdk-github-webhook';
-import '@cloudcomponents/jest-cdk-snapshot';
+import { Bucket } from '@aws-cdk/aws-s3';
+import 'jest-cdk-snapshot';
 
-describe('cdk-github-webhook', () => {
-  it('snapshot', () => {
-    const stack = new Stack();
+test('default setup', () => {
+  const stack = new Stack();
 
-    new GithubWebhook(stack, 'GithubWebhook', {
-      githubApiToken: 'test12',
-      githubRepoUrl: 'test',
-      payloadUrl: 'test',
-      events: ['test']
-    });
+  new Bucket(stack, 'Foo');
 
-    expect(stack).toMatchCdkSnapshot();
-  });
+  expect(stack).toMatchCdkSnapshot();
 });
 ```
 
@@ -35,22 +28,14 @@ describe('cdk-github-webhook', () => {
 
 ```javascript
 import { Stack } from '@aws-cdk/core';
-import { GithubWebhook } from '@cloudcomponents/cdk-github-webhook';
-import '@cloudcomponents/jest-cdk-snapshot';
+import { Bucket } from '@aws-cdk/aws-s3';
+import 'jest-cdk-snapshot';
 
-describe('cdk-github-webhook', () => {
-  it('snapshot', () => {
-    const stack = new Stack();
+test('default setup', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Foo');
 
-    new GithubWebhook(stack, 'GithubWebhook', {
-      githubApiToken: 'test12',
-      githubRepoUrl: 'test',
-      payloadUrl: 'test',
-      events: ['test']
-    });
-
-    expect(stack).toMatchCdkSnapshot({ yaml: true });
-  });
+  expect(stack).toMatchCdkSnapshot({ yaml: true });
 });
 ```
 

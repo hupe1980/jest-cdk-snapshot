@@ -1,12 +1,11 @@
 {
-  "name": "@cloudcomponents/jest-cdk-snapshot",
-  "version": "1.0.10",
+  "name": "jest-cdk-snapshot",
+  "version": "1.0.11",
   "description": "Jest matcher for cdk cloudformation comparisons.",
   "license": "MIT",
-  "author": "hello@webappsolutions.de",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cloudcomponents/jest-cdk-snapshot"
+    "url": "git+https://github.com/hupe1980/jest-cdk-snapshot"
   },
   "keywords": [
     "aws",
