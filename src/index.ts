@@ -4,7 +4,7 @@ import * as jsYaml from 'js-yaml'
 
 declare global {
   namespace jest {
-    interface Matchers<R> {
+    interface Matchers<R, T> {
       toMatchCdkSnapshot(options?: Options): R;
     }
   }
