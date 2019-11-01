@@ -1,6 +1,7 @@
-import { ConstructNode, Stack, SynthesisOptions } from '@aws-cdk/core';
+import { SynthUtils } from '@aws-cdk/assert';
+import { Stack, SynthesisOptions } from '@aws-cdk/core';
 import { toMatchSnapshot } from 'jest-snapshot';
-import * as jsYaml from 'js-yaml'
+import * as jsYaml from 'js-yaml';
 
 declare global {
   namespace jest {
@@ -14,8 +15,15 @@ type Options = SynthesisOptions & {
   /**
    * Output snapshots in YAML (instead of JSON)
    */
-  yaml?: boolean
-}
+  yaml?: boolean;
+
+  /**
+   * Match only resources of given types
+   */
+  subsetResourceTypes?: string[];
+
+  propertyMatchers?: {[property: string]: any}
+};
 
 export const toMatchCdkSnapshot = function(
   this: any,
@@ -23,26 +31,36 @@ export const toMatchCdkSnapshot = function(
   options: Options = {}
 ) {
   const matcher = toMatchSnapshot.bind(this);
-  return matcher(convertStack(received, options));
+  const { propertyMatchers, ...convertOptions } = options;
+  
+  return matcher(convertStack(received, convertOptions), propertyMatchers);
 };
 
 const convertStack = (stack: Stack, options: Options = {}) => {
-  const { root } = stack.node;
-  const { yaml, ...synthOptions } = options
+  const { yaml, subsetResourceTypes, ...synthOptions } = options;
 
-  const assembly = ConstructNode.synth(root.node, synthOptions);
-  const template = assembly.getStack(stack.stackName).template;
+  const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
-  return yaml ? jsYaml.safeDump(template) : template
+  if (subsetResourceTypes) {
+    if (template.Resources) {
+      for (const [key, resource] of Object.entries(template.Resources)) {
+        if (!subsetResourceTypes.includes((resource as any).Type)) {
+          delete template.Resources[key];
+        }
+      }
+    }
+  }
+
+  return yaml ? jsYaml.safeDump(template) : template;
 };
 
 if (expect !== undefined) {
-  expect.extend({toMatchCdkSnapshot});
+  expect.extend({ toMatchCdkSnapshot });
 } else {
   /* eslint-disable-next-line no-console */
   console.error(
     "Unable to find Jest's global expect." +
-    '\nPlease check you have added jest-cdk-snapshot correctly.' +
-    '\nSee https://github.com/hupe1980/jest-cdk-snapshot for help.'
+      '\nPlease check you have added jest-cdk-snapshot correctly.' +
+      '\nSee https://github.com/hupe1980/jest-cdk-snapshot for help.'
   );
 }

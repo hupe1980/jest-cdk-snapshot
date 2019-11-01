@@ -7,12 +7,12 @@
 ## Install
 
 ```bash
-npm install --save-dev jest-cdk-snapshot
+npm i -D jest-cdk-snapshot
 ```
 
 ## How to use
 
-```javascript
+```typescript
 import { Stack } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
 import 'jest-cdk-snapshot';
@@ -28,7 +28,7 @@ test('default setup', () => {
 
 ## Use YAML as snapshot format
 
-```javascript
+```typescript
 import { Stack } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
 import 'jest-cdk-snapshot';
@@ -38,6 +38,26 @@ test('default setup', () => {
   new Bucket(stack, 'Foo');
 
   expect(stack).toMatchCdkSnapshot({ yaml: true });
+});
+```
+
+## Match only resources of given types
+
+```typescript
+import { Stack } from '@aws-cdk/core';
+import { Bucket } from '@aws-cdk/aws-s3';
+import { Topic } from '@aws-cdk/aws-sns';
+import 'jest-cdk-snapshot';
+
+test('subsetResourceTypes', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Ignore');
+
+  new Topic(stack, 'Topic');
+
+  expect(stack).toMatchCdkSnapshot({
+    subsetResourceTypes: ['AWS::SNS::Topic']
+  });
 });
 ```
 

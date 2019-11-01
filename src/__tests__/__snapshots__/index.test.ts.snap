@@ -12,6 +12,16 @@ Object {
 }
 `;
 
+exports[`subsetResourceTypes 1`] = `
+Object {
+  "Resources": Object {
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
 exports[`yaml setup 1`] = `
 "Resources:
   FooDFE0DD70:
