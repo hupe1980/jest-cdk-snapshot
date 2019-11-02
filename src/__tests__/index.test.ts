@@ -28,3 +28,26 @@ test('subsetResourceTypes', () => {
     subsetResourceTypes: ['AWS::SNS::Topic']
   });
 });
+
+test('propertyMatchers', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Random', {
+    websiteIndexDocument: 'test.html',
+    bucketName: `random${Math.floor(Math.random() * 20)}name`
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    propertyMatchers: {
+      Resources: {
+        RandomF1C596BC: {
+          Properties: {
+            BucketName: expect.any(String),
+            WebsiteConfiguration: {
+              IndexDocument: 'test.html'
+            }
+          }
+        }
+      }
+    }
+  });
+});

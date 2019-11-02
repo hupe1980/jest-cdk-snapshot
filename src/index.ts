@@ -22,7 +22,7 @@ type Options = SynthesisOptions & {
    */
   subsetResourceTypes?: string[];
 
-  propertyMatchers?: {[property: string]: any}
+  propertyMatchers?: { [property: string]: any };
 };
 
 export const toMatchCdkSnapshot = function(
@@ -32,7 +32,7 @@ export const toMatchCdkSnapshot = function(
 ) {
   const matcher = toMatchSnapshot.bind(this);
   const { propertyMatchers, ...convertOptions } = options;
-  
+
   return matcher(convertStack(received, convertOptions), propertyMatchers);
 };
 
@@ -41,12 +41,10 @@ const convertStack = (stack: Stack, options: Options = {}) => {
 
   const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
-  if (subsetResourceTypes) {
-    if (template.Resources) {
-      for (const [key, resource] of Object.entries(template.Resources)) {
-        if (!subsetResourceTypes.includes((resource as any).Type)) {
-          delete template.Resources[key];
-        }
+  if (subsetResourceTypes && template.Resources) {
+    for (const [key, resource] of Object.entries(template.Resources)) {
+      if (!subsetResourceTypes.includes((resource as any).Type)) {
+        delete template.Resources[key];
       }
     }
   }

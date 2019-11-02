@@ -12,6 +12,24 @@ Object {
 }
 `;
 
+exports[`propertyMatchers 1`] = `
+Object {
+  "Resources": Object {
+    "RandomF1C596BC": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": Any<String>,
+        "WebsiteConfiguration": Object {
+          "IndexDocument": "test.html",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
+
 exports[`subsetResourceTypes 1`] = `
 Object {
   "Resources": Object {

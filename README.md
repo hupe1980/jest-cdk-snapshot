@@ -43,6 +43,8 @@ test('default setup', () => {
 
 ## Match only resources of given types
 
+If you only want to test certain parts of your stack, jest-cdk-snapshot offers the possibility to create a subset for specific types. Snapshots are created only for this subset.
+
 ```typescript
 import { Stack } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
@@ -57,6 +59,39 @@ test('subsetResourceTypes', () => {
 
   expect(stack).toMatchCdkSnapshot({
     subsetResourceTypes: ['AWS::SNS::Topic']
+  });
+});
+```
+
+### PropertyMatchers
+
+Often there are fields in the stack you want to snapshot which are generated (like Artifact hashes). If you try to snapshot these stacks, they will force the snapshot to fail on every run. For these cases, jest-cdk-snapshot allows providing an asymmetric matcher for any property. These matchers are checked before the snapshot is written or tested, and then saved to the snapshot file instead of the received value. Any given value that is not a matcher will be checked exactly and saved to the snapshot:
+
+```typescript
+import { Stack } from '@aws-cdk/core';
+import { Bucket } from '@aws-cdk/aws-s3';
+import 'jest-cdk-snapshot';
+
+test('propertyMatchers', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Random', {
+    websiteIndexDocument: 'test.html',
+    bucketName: `random${Math.floor(Math.random() * 20)}name`
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    propertyMatchers: {
+      Resources: {
+        RandomF1C596BC: {
+          Properties: {
+            BucketName: expect.any(String), // matcher
+            WebsiteConfiguration: {
+              IndexDocument: 'test.html' // given value
+            }
+          }
+        }
+      }
+    }
   });
 });
 ```
