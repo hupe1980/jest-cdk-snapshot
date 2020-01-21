@@ -12,6 +12,23 @@ Object {
 }
 `;
 
+exports[`multiple resources 1`] = `
+Object {
+  "Resources": Object {
+    "BarA6AB415C": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "FooDFE0DD70": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
+
 exports[`propertyMatchers 1`] = `
 Object {
   "Resources": Object {

@@ -11,6 +11,15 @@ test('default setup', () => {
   expect(stack).toMatchCdkSnapshot();
 });
 
+test('multiple resources', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Foo');
+
+  new Bucket(stack, 'Bar');
+
+  expect(stack).toMatchCdkSnapshot();
+});
+
 test('yaml setup', () => {
   const stack = new Stack();
   new Bucket(stack, 'Foo');
