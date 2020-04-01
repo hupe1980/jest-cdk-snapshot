@@ -35,18 +35,18 @@
     "jest": ">=24.8.0"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.21.1",
-    "@aws-cdk/aws-s3": "^1.21.1",
-    "@aws-cdk/aws-sns": "^1.21.1",
-    "@aws-cdk/core": "^1.21.1",
-    "@types/jest": "^24.9.0",
-    "@types/js-yaml": "^3.12.1",
-    "@types/node": "^12.12.25",
-    "jest": "^24.9.0",
-    "jest-haste-map": "^24.9.0",
-    "jest-snapshot": "^24.9.0",
-    "rimraf": "^3.0.0",
-    "ts-jest": "^24.3.0",
-    "typescript": "^3.7.5"
+    "@aws-cdk/assert": "^1.31.0",
+    "@aws-cdk/aws-s3": "^1.31.0",
+    "@aws-cdk/aws-sns": "^1.31.0",
+    "@aws-cdk/core": "^1.31.0",
+    "@types/jest": "^25.1.4",
+    "@types/js-yaml": "^3.12.3",
+    "@types/node": "^12.12.34",
+    "jest": "^25.2.4",
+    "jest-haste-map": "^25.2.3",
+    "jest-snapshot": "^25.2.4",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^25.3.0",
+    "typescript": "^3.8.3"
   }
 }

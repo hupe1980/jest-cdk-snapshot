@@ -5,7 +5,7 @@ import * as jsYaml from 'js-yaml';
 
 declare global {
   namespace jest {
-    interface Matchers<R, T> {
+    interface Matchers<R> {
       toMatchCdkSnapshot(options?: Options): R;
     }
   }
@@ -33,7 +33,11 @@ export const toMatchCdkSnapshot = function(
   const matcher = toMatchSnapshot.bind(this);
   const { propertyMatchers, ...convertOptions } = options;
 
-  return matcher(convertStack(received, convertOptions), propertyMatchers);
+  const stack = convertStack(received, convertOptions)
+
+  return propertyMatchers
+    ? matcher(stack, propertyMatchers)
+    : matcher(stack);
 };
 
 const convertStack = (stack: Stack, options: Options = {}) => {
