@@ -22,6 +22,11 @@ type Options = SynthesisOptions & {
    */
   subsetResourceTypes?: string[];
 
+  /**
+   * Match only resources of given keys
+   */
+  subsetResourceKeys?: string[];
+
   propertyMatchers?: { [property: string]: any };
 };
 
@@ -41,13 +46,21 @@ export const toMatchCdkSnapshot = function(
 };
 
 const convertStack = (stack: Stack, options: Options = {}) => {
-  const { yaml, subsetResourceTypes, ...synthOptions } = options;
+  const { yaml, subsetResourceTypes, subsetResourceKeys ,...synthOptions } = options;
 
   const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
   if (subsetResourceTypes && template.Resources) {
     for (const [key, resource] of Object.entries(template.Resources)) {
       if (!subsetResourceTypes.includes((resource as any).Type)) {
+        delete template.Resources[key];
+      }
+    }
+  }
+
+  if (subsetResourceKeys && template.Resources) {
+    for (const [key] of Object.entries(template.Resources)) {
+      if (!subsetResourceKeys.includes(key)) {
         delete template.Resources[key];
       }
     }

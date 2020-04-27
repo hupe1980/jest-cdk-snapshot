@@ -41,7 +41,7 @@ test('default setup', () => {
 });
 ```
 
-## Match only resources of given types
+## Match only resources of given types/keys
 
 If you only want to test certain parts of your stack, jest-cdk-snapshot offers the possibility to create a subset for specific types. Snapshots are created only for this subset.
 
@@ -59,6 +59,17 @@ test('subsetResourceTypes', () => {
 
   expect(stack).toMatchCdkSnapshot({
     subsetResourceTypes: ['AWS::SNS::Topic']
+  });
+});
+
+test('subsetResourceKeys', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Ignore');
+
+  new Topic(stack, 'Topic'); // => TopicBFC7AF6E
+
+  expect(stack).toMatchCdkSnapshot({
+    subsetResourceKeys: ['TopicBFC7AF6E'],
   });
 });
 ```

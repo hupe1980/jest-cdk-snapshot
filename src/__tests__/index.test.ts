@@ -38,6 +38,17 @@ test('subsetResourceTypes', () => {
   });
 });
 
+test('subsetResourceKeys', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Ignore');
+
+  new Topic(stack, 'Topic');
+
+  expect(stack).toMatchCdkSnapshot({
+    subsetResourceKeys: ['TopicBFC7AF6E'],
+  });
+});
+
 test('propertyMatchers', () => {
   const stack = new Stack();
   new Bucket(stack, 'Random', {

@@ -47,6 +47,16 @@ Object {
 }
 `;
 
+exports[`subsetResourceKeys 1`] = `
+Object {
+  "Resources": Object {
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
 exports[`subsetResourceTypes 1`] = `
 Object {
   "Resources": Object {
