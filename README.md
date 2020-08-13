@@ -26,6 +26,28 @@ test('default setup', () => {
 });
 ```
 
+## Ignore Assets
+```typescript
+import * as path from 'path';
+import { Stack } from '@aws-cdk/core';
+import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
+
+test('ignore assets', () => {
+  const stack = new Stack();
+  
+  new Function(stack, 'Function', {
+    code: Code.fromAsset(path.join(__dirname, 'fixtures', 'lambda')),
+    runtime: Runtime.NODEJS_12_X,
+    handler: 'index.handler'
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+  });
+});
+
+```
+
 ## Use YAML as snapshot format
 
 ```typescript
