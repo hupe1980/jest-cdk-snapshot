@@ -1,6 +1,6 @@
 {
   "name": "jest-cdk-snapshot",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Jest matcher for cdk cloudformation comparisons.",
   "license": "MIT",
   "repository": {
