@@ -20,8 +20,9 @@
   "scripts": {
     "build": "rimraf lib && tsc",
     "watch": "rimraf lib && tsc -w",
-    "prepare": "npm run build",
-    "test": "jest"
+    "prepare": "yarn build && yarn test",
+    "test": "jest",
+    "lint": "eslint '*/**/*.{ts,tsx}' --report-unused-disable-directives"
   },
   "files": [
     "lib"
@@ -35,16 +36,23 @@
     "jest": ">=24.8.0"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.31.0",
-    "@aws-cdk/aws-s3": "^1.31.0",
-    "@aws-cdk/aws-sns": "^1.31.0",
-    "@aws-cdk/core": "^1.31.0",
+    "@aws-cdk/assert": "^1.58.0",
+    "@aws-cdk/aws-s3": "^1.58.0",
+    "@aws-cdk/aws-sns": "^1.58.0",
+    "@aws-cdk/aws-lambda": "^1.58.0",
+    "@aws-cdk/core": "^1.58.0",
     "@types/jest": "^25.1.4",
     "@types/js-yaml": "^3.12.3",
     "@types/node": "^12.12.34",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "jest": "^25.2.4",
     "jest-haste-map": "^25.2.3",
     "jest-snapshot": "^25.2.4",
+    "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.0",
     "typescript": "^3.8.3"

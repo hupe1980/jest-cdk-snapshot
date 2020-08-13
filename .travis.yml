@@ -6,12 +6,16 @@ node_js:
   - "10"
   - "12"
 
+install:
+  - yarn --frozen-lockfile
+
 script:
   - node --version
-  - npm run build
-  - npm run test
+  - yarn run build
+  - yarn run lint
+  - yarn run test
 
-cache: npm
+cache: yarn
 
 branches:
   only:
