@@ -1,5 +1,5 @@
 import * as path from "path";
-import { Stack } from "@aws-cdk/core";
+import { CfnParameter, Stack } from "@aws-cdk/core";
 import { Bucket } from "@aws-cdk/aws-s3";
 import { Topic } from "@aws-cdk/aws-sns";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
@@ -82,6 +82,16 @@ test("ignore assets", () => {
     runtime: Runtime.NODEJS_12_X,
     handler: "index.handler",
   });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+  });
+});
+
+test("ignore assets without resources", () => {
+  const stack = new Stack();
+
+  new CfnParameter(stack, "Param")
 
   expect(stack).toMatchCdkSnapshot({
     ignoreAssets: true,

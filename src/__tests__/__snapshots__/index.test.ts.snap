@@ -68,6 +68,16 @@ Object {
 }
 `;
 
+exports[`ignore assets without resources 1`] = `
+Object {
+  "Parameters": Object {
+    "Param": Object {
+      "Type": "String",
+    },
+  },
+}
+`;
+
 exports[`multiple resources 1`] = `
 Object {
   "Resources": Object {
