@@ -62,7 +62,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
 
   const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
-  if (ignoreAssets && template.Parameters) {
+  if (ignoreAssets && template.Parameters && template.Resources) {
     template.Parameters = expect.any(Object);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
