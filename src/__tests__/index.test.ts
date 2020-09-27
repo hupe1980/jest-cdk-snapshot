@@ -91,7 +91,7 @@ test("ignore assets", () => {
 test("ignore assets without resources", () => {
   const stack = new Stack();
 
-  new CfnParameter(stack, "Param")
+  new CfnParameter(stack, "Param");
 
   expect(stack).toMatchCdkSnapshot({
     ignoreAssets: true,
