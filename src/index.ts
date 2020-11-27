@@ -12,6 +12,8 @@ declare global {
   }
 }
 
+const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
+
 type Options = StageSynthesisOptions & {
   /**
    * Output snapshots in YAML (instead of JSON)
@@ -22,6 +24,11 @@ type Options = StageSynthesisOptions & {
    * Ignore Assets
    */
   ignoreAssets?: boolean;
+
+  /**
+   * Ignore Lambda Current Version
+   */
+  ignoreCurrentVersion?: boolean;
 
   /**
    * Match only resources of given types
@@ -55,6 +62,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
   const {
     yaml,
     ignoreAssets = false,
+    ignoreCurrentVersion = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
@@ -73,6 +81,18 @@ const convertStack = (stack: Stack, options: Options = {}) => {
         resource.Properties.Code = expect.any(Object);
       }
     });
+  }
+
+  if (ignoreCurrentVersion && template.Parameters && template.Resources) {
+    template.Parameters = expect.any(Object);
+    for (const [key, resource] of Object.entries(template.Resources)) {
+      const match = currentVersionRegex.exec(key);
+      if (match) {
+        const newKey = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        template.Resources[newKey] = resource;
+        delete template.Resources[key];
+      }
+    }
   }
 
   if (subsetResourceTypes && template.Resources) {

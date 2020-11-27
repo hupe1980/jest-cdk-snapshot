@@ -96,3 +96,19 @@ test("ignore assets without resources", () => {
     ignoreAssets: true,
   });
 });
+
+test("ignore current version", () => {
+  const stack = new Stack();
+
+  const lf = new Function(stack, "Function", {
+    code: Code.fromAsset(path.join(__dirname, "fixtures", "lambda")),
+    runtime: Runtime.NODEJS_12_X,
+    handler: "index.handler",
+  });
+  lf.currentVersion;
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+    ignoreCurrentVersion: true,
+  });
+});
