@@ -1,5 +1,5 @@
 import { SynthUtils } from "@aws-cdk/assert";
-import { Stack, SynthesisOptions } from "@aws-cdk/core";
+import { Stack, StageSynthesisOptions } from "aws-cdk-lib";
 import { toMatchSnapshot } from "jest-snapshot";
 import * as jsYaml from "js-yaml";
 
@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-type Options = SynthesisOptions & {
+type Options = StageSynthesisOptions & {
   /**
    * Output snapshots in YAML (instead of JSON)
    */

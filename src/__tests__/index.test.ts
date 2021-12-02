@@ -1,9 +1,8 @@
+import { CfnParameter, Stack } from "aws-cdk-lib";
+import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { Topic } from "aws-cdk-lib/aws-sns";
 import * as path from "path";
-import { CfnParameter, Stack } from "@aws-cdk/core";
-import { Bucket } from "@aws-cdk/aws-s3";
-import { Topic } from "@aws-cdk/aws-sns";
-import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
-
 import "../index";
 
 test("default setup", () => {
