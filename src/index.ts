@@ -1,5 +1,5 @@
 import { SynthUtils } from "@aws-cdk/assert";
-import { Stack, SynthesisOptions } from "@aws-cdk/core";
+import { Stack, StageSynthesisOptions } from "aws-cdk-lib";
 import { toMatchSnapshot } from "jest-snapshot";
 import * as jsYaml from "js-yaml";
 
@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-type Options = SynthesisOptions & {
+type Options = StageSynthesisOptions & {
   /**
    * Output snapshots in YAML (instead of JSON)
    */
@@ -62,8 +62,10 @@ const convertStack = (stack: Stack, options: Options = {}) => {
 
   const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
-  if (ignoreAssets && template.Parameters && template.Resources) {
-    template.Parameters = expect.any(Object);
+  if (ignoreAssets && template.Resources) {
+    if (template.Parameters) {
+      template.Parameters = expect.any(Object);
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.values(template.Resources).forEach((resource: any) => {
