@@ -12,9 +12,11 @@ npm i -D jest-cdk-snapshot
 
 ## How to use
 
+Note that this targets of CDK v2. If you are still using v1 you must use v1 of this library.
+
 ```typescript
-import { Stack } from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
+import { Stack } from 'aws-cdk-lib/core';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import 'jest-cdk-snapshot';
 
 test('default setup', () => {
@@ -27,10 +29,11 @@ test('default setup', () => {
 ```
 
 ## Ignore Assets
+
 ```typescript
 import * as path from 'path';
-import { Stack } from '@aws-cdk/core';
-import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
+import { Stack } from 'aws-cdk-lib';
+import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 
 test('ignore assets', () => {
   const stack = new Stack();
@@ -51,8 +54,8 @@ test('ignore assets', () => {
 ## Use YAML as snapshot format
 
 ```typescript
-import { Stack } from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
+import { Stack } from 'aws-cdk-lib';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import 'jest-cdk-snapshot';
 
 test('default setup', () => {
@@ -68,9 +71,9 @@ test('default setup', () => {
 If you only want to test certain parts of your stack, jest-cdk-snapshot offers the possibility to create a subset for specific types. Snapshots are created only for this subset.
 
 ```typescript
-import { Stack } from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { Topic } from '@aws-cdk/aws-sns';
+import { Stack } from 'aws-cdk-lib';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Topic } from 'aws-cdk-lib/aws-sns';
 import 'jest-cdk-snapshot';
 
 test('subsetResourceTypes', () => {
@@ -101,8 +104,8 @@ test('subsetResourceKeys', () => {
 Often there are fields in the stack you want to snapshot which are generated (like Artifact hashes). If you try to snapshot these stacks, they will force the snapshot to fail on every run. For these cases, jest-cdk-snapshot allows providing an asymmetric matcher for any property. These matchers are checked before the snapshot is written or tested, and then saved to the snapshot file instead of the received value. Any given value that is not a matcher will be checked exactly and saved to the snapshot:
 
 ```typescript
-import { Stack } from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
+import { Stack } from 'aws-cdk-lib';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import 'jest-cdk-snapshot';
 
 test('propertyMatchers', () => {
