@@ -79,7 +79,6 @@ Object {
 
 exports[`ignore current version 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "Function76856677": Object {
       "DependsOn": Array [

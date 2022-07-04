@@ -83,8 +83,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     });
   }
 
-  if (ignoreCurrentVersion && template.Parameters && template.Resources) {
-    template.Parameters = expect.any(Object);
+  if (ignoreCurrentVersion && template.Resources) {
     for (const [key, resource] of Object.entries(template.Resources)) {
       const match = currentVersionRegex.exec(key);
       if (match) {
