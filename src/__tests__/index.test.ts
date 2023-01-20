@@ -2,6 +2,11 @@ import { CfnParameter, Stack } from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
+import {
+  CodePipeline,
+  CodePipelineSource,
+  ShellStep,
+} from "aws-cdk-lib/pipelines";
 import * as path from "path";
 import "../index";
 
@@ -94,5 +99,33 @@ test("ignore assets without resources", () => {
 
   expect(stack).toMatchCdkSnapshot({
     ignoreAssets: true,
+  });
+});
+
+test("ignore buildSpec", () => {
+  const stack = new Stack();
+
+  new CodePipeline(stack, "CodePipeline", {
+    synth: new ShellStep("Synth", {
+      input: CodePipelineSource.connection("owner/repo", "main", {
+        connectionArn: "arn",
+      }),
+      commands: ["npm install", "npm run build"],
+      primaryOutputDirectory: `dist/`,
+    }),
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreBuildSpec: true,
+  });
+});
+
+test("ignore buildSpec without resources", () => {
+  const stack = new Stack();
+
+  new CfnParameter(stack, "Param");
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreBuildSpec: true,
   });
 });
