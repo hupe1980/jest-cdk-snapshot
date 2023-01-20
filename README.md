@@ -51,6 +51,33 @@ test('ignore assets', () => {
 
 ```
 
+## Ignore BuildSpec
+
+```typescript
+import * as path from 'path';
+import { Stack } from 'aws-cdk-lib';
+import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
+
+test('ignore BuildSpec', () => {
+  const stack = new Stack();
+
+  new CodePipeline(stack, "CodePipeline", {
+    synth: new ShellStep("Synth", {
+      input: CodePipelineSource.connection("owner/repo", "main", {
+        connectionArn: "arn",
+      }),
+      commands: ["npm install", "npm run build"],
+      primaryOutputDirectory: `dist/`,
+    }),
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreBuildSpec: true,
+  });
+});
+
+```
+
 ## Use YAML as snapshot format
 
 ```typescript
