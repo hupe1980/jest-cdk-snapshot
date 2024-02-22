@@ -117,3 +117,18 @@ test("ignore current version", () => {
     ignoreCurrentVersion: true,
   });
 });
+
+test("YAML should support ignoreAssets", () => {
+  const stack = new Stack();
+
+  new Function(stack, "Function", {
+    code: Code.fromAsset(path.join(__dirname, "fixtures", "lambda")),
+    runtime: Runtime.NODEJS_12_X,
+    handler: "index.handler",
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+    yaml: true,
+  });
+});
