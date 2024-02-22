@@ -24,6 +24,11 @@ type Options = StageSynthesisOptions & {
   ignoreAssets?: boolean;
 
   /**
+   * Ignore Lambda Current Version
+   */
+  ignoreCurrentVersion?: boolean;
+
+  /**
    * Match only resources of given types
    */
   subsetResourceTypes?: string[];
@@ -35,6 +40,8 @@ type Options = StageSynthesisOptions & {
 
   propertyMatchers?: { [property: string]: unknown };
 };
+
+const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const toMatchCdkSnapshot = function (
@@ -51,10 +58,24 @@ export const toMatchCdkSnapshot = function (
   return propertyMatchers ? matcher(stack, propertyMatchers) : matcher(stack);
 };
 
+const maskCurrentVersionRefs = (tree: Record<string, unknown>): void => {
+  for (const [key, value] of Object.entries(tree)) {
+    if (key === "Ref" && typeof value === "string") {
+      const match = currentVersionRegex.exec(value);
+      if (match) {
+        tree[key] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+      }
+    } else if (typeof value === "object" && value !== null) {
+      maskCurrentVersionRefs(value as Record<string, unknown>);
+    }
+  }
+};
+
 const convertStack = (stack: Stack, options: Options = {}) => {
   const {
     yaml,
     ignoreAssets = false,
+    ignoreCurrentVersion = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
@@ -73,6 +94,19 @@ const convertStack = (stack: Stack, options: Options = {}) => {
         resource.Properties.Code = expect.any(Object);
       }
     });
+  }
+
+  if (ignoreCurrentVersion && template.Resources) {
+    for (const [key, resource] of Object.entries(template.Resources)) {
+      const match = currentVersionRegex.exec(key);
+      if (match) {
+        const newKey = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        template.Resources[newKey] = resource;
+        delete template.Resources[key];
+      }
+    }
+
+    maskCurrentVersionRefs(template);
   }
 
   if (subsetResourceTypes && template.Resources) {
