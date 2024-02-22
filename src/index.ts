@@ -84,14 +84,16 @@ const convertStack = (stack: Stack, options: Options = {}) => {
   const template = SynthUtils.toCloudFormation(stack, synthOptions);
 
   if (ignoreAssets && template.Resources) {
+    const anyObject = yaml ? "Any<Object>" : expect.any(Object);
+
     if (template.Parameters) {
-      template.Parameters = expect.any(Object);
+      template.Parameters = anyObject;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.values(template.Resources).forEach((resource: any) => {
       if (resource?.Properties?.Code) {
-        resource.Properties.Code = expect.any(Object);
+        resource.Properties.Code = anyObject;
       }
     });
   }
