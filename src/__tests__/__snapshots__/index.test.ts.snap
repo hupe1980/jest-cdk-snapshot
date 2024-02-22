@@ -34,9 +34,9 @@ exports[`YAML should support ignoreAssets 1`] = `
 `;
 
 exports[`default setup 1`] = `
-Object {
-  "Resources": Object {
-    "FooDFE0DD70": Object {
+{
+  "Resources": {
+    "FooDFE0DD70": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
@@ -46,17 +46,17 @@ Object {
 `;
 
 exports[`ignore assets 1`] = `
-Object {
-  "Resources": Object {
-    "Function76856677": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "Function76856677": {
+      "DependsOn": [
         "FunctionServiceRole675BB04A",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "FunctionServiceRole675BB04A",
             "Arn",
           ],
@@ -65,27 +65,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "FunctionServiceRole675BB04A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "FunctionServiceRole675BB04A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -101,9 +101,9 @@ Object {
 `;
 
 exports[`ignore assets without resources 1`] = `
-Object {
-  "Parameters": Object {
-    "Param": Object {
+{
+  "Parameters": {
+    "Param": {
       "Type": "String",
     },
   },
@@ -111,24 +111,24 @@ Object {
 `;
 
 exports[`ignore current version 1`] = `
-Object {
-  "Outputs": Object {
-    "CurrentVersion": Object {
-      "Value": Object {
+{
+  "Outputs": {
+    "CurrentVersion": {
+      "Value": {
         "Ref": "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       },
     },
   },
-  "Resources": Object {
-    "Function76856677": Object {
-      "DependsOn": Array [
+  "Resources": {
+    "Function76856677": {
+      "DependsOn": [
         "FunctionServiceRole675BB04A",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "FunctionServiceRole675BB04A",
             "Arn",
           ],
@@ -137,45 +137,45 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": Object {
-      "Properties": Object {
-        "FunctionName": Object {
+    "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+      "Properties": {
+        "FunctionName": {
           "Ref": "Function76856677",
         },
       },
       "Type": "AWS::Lambda::Version",
     },
-    "FunctionCurrentVersionInvokeO70dFox86eKZlYOiUYzJdDudpIw1WkS8lPrLcBMyg8A957952": Object {
-      "Properties": Object {
+    "FunctionCurrentVersionInvokeO70dFox86eKZlYOiUYzJdDudpIw1WkS8lPrLcBMyg8A957952": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
+        "FunctionName": {
           "Ref": "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         },
         "Principal": "123456789012",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "FunctionServiceRole675BB04A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "FunctionServiceRole675BB04A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -191,14 +191,14 @@ Object {
 `;
 
 exports[`multiple resources 1`] = `
-Object {
-  "Resources": Object {
-    "BarA6AB415C": Object {
+{
+  "Resources": {
+    "BarA6AB415C": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "FooDFE0DD70": Object {
+    "FooDFE0DD70": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
@@ -208,13 +208,13 @@ Object {
 `;
 
 exports[`propertyMatchers 1`] = `
-Object {
-  "Resources": Object {
-    "RandomF1C596BC": Object {
+{
+  "Resources": {
+    "RandomF1C596BC": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "BucketName": Any<String>,
-        "WebsiteConfiguration": Object {
+        "WebsiteConfiguration": {
           "IndexDocument": "test.html",
         },
       },
@@ -226,33 +226,33 @@ Object {
 `;
 
 exports[`show bootstrap version if ignoreBootstrapVersion is explicitly false 1`] = `
-Object {
-  "Parameters": Object {
-    "BootstrapVersion": Object {
+{
+  "Parameters": {
+    "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "Param": Object {
+    "Param": {
       "Type": "String",
     },
   },
-  "Rules": Object {
-    "CheckBootstrapVersion": Object {
-      "Assertions": Array [
-        Object {
-          "Assert": Object {
-            "Fn::Not": Array [
-              Object {
-                "Fn::Contains": Array [
-                  Array [
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
                     "1",
                     "2",
                     "3",
                     "4",
                     "5",
                   ],
-                  Object {
+                  {
                     "Ref": "BootstrapVersion",
                   },
                 ],
@@ -268,9 +268,9 @@ Object {
 `;
 
 exports[`subsetResourceKeys 1`] = `
-Object {
-  "Resources": Object {
-    "TopicBFC7AF6E": Object {
+{
+  "Resources": {
+    "TopicBFC7AF6E": {
       "Type": "AWS::SNS::Topic",
     },
   },
@@ -278,9 +278,9 @@ Object {
 `;
 
 exports[`subsetResourceTypes 1`] = `
-Object {
-  "Resources": Object {
-    "TopicBFC7AF6E": Object {
+{
+  "Resources": {
+    "TopicBFC7AF6E": {
       "Type": "AWS::SNS::Topic",
     },
   },
