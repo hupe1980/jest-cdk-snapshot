@@ -66,6 +66,25 @@ test('default setup', () => {
 });
 ```
 
+## Show CDK bootstrap versions
+
+CDK v2 includes bootstrap versions in CloudFormation template.
+These fields are generally not interesting, so ignored by default.
+To include these fields in snapshots, set `ignoreBootstrapVersion: false` explicitly.
+
+```typescript
+import { Stack } from 'aws-cdk-lib';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import 'jest-cdk-snapshot';
+
+test('default setup', () => {
+  const stack = new Stack();
+  new Bucket(stack, 'Foo');
+
+  expect(stack).toMatchCdkSnapshot({ ignoreBootstrapVersion: false });
+});
+```
+
 ## Match only resources of given types/keys
 
 If you only want to test certain parts of your stack, jest-cdk-snapshot offers the possibility to create a subset for specific types. Snapshots are created only for this subset.
