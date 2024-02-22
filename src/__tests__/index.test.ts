@@ -132,3 +132,13 @@ test("YAML should support ignoreAssets", () => {
     yaml: true,
   });
 });
+
+test("show bootstrap version if ignoreBootstrapVersion is explicitly false", () => {
+  const stack = new Stack();
+
+  new CfnParameter(stack, "Param");
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreBootstrapVersion: false,
+  });
+});

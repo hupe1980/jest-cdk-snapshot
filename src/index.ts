@@ -1,5 +1,4 @@
-import { SynthUtils } from "@aws-cdk/assert";
-import { Stack, StageSynthesisOptions } from "aws-cdk-lib";
+import { App, Stack, StageSynthesisOptions } from "aws-cdk-lib";
 import { toMatchSnapshot } from "jest-snapshot";
 import * as jsYaml from "js-yaml";
 
@@ -39,6 +38,12 @@ type Options = StageSynthesisOptions & {
   subsetResourceKeys?: string[];
 
   propertyMatchers?: { [property: string]: unknown };
+
+  /**
+   * Excludes CDK v2-managed bootstrap versions.
+   * Defaults to `false`.
+   */
+  ignoreBootstrapVersion?: boolean;
 };
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
@@ -75,13 +80,30 @@ const convertStack = (stack: Stack, options: Options = {}) => {
   const {
     yaml,
     ignoreAssets = false,
+    ignoreBootstrapVersion = true,
     ignoreCurrentVersion = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
   } = options;
 
-  const template = SynthUtils.toCloudFormation(stack, synthOptions);
+  const template = App.of(stack)?.synth(synthOptions).stacks[0].template ?? {};
+
+  if (ignoreBootstrapVersion) {
+    if (template.Parameters) {
+      delete template.Parameters.BootstrapVersion;
+      if (Object.keys(template.Parameters).length === 0) {
+        delete template.Parameters;
+      }
+    }
+
+    if (template.Rules) {
+      delete template.Rules.CheckBootstrapVersion;
+      if (Object.keys(template.Rules).length === 0) {
+        delete template.Rules;
+      }
+    }
+  }
 
   if (ignoreAssets && template.Resources) {
     const anyObject = yaml ? "Any<Object>" : expect.any(Object);
