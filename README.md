@@ -51,6 +51,32 @@ test('ignore assets', () => {
 
 ```
 
+## Ignore CurrentVersions
+
+With this enabled, hash-parts in Lambda's current version and in their references get masked.
+So the snapshot test will not fail if the hash changes.
+This is handy when you have concurrent pull requests that change hash.
+
+```typescript
+import * as path from 'path';
+import { Stack } from 'aws-cdk-lib';
+import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+
+test('ignore current version', () => {
+  const stack = new Stack();
+  
+  new Function(stack, 'Function', {
+    code: Code.fromAsset(path.join(__dirname, 'fixtures', 'lambda')),
+    runtime: Runtime.NODEJS_12_X,
+    handler: 'index.handler'
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+      ignoreCurrentVersion: true,
+  });
+});
+```
+
 ## Use YAML as snapshot format
 
 ```typescript

@@ -1,5 +1,6 @@
-import { CfnParameter, Stack } from "aws-cdk-lib";
+import { CfnOutput, CfnParameter, Stack } from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { AccountPrincipal } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import * as path from "path";
@@ -94,5 +95,25 @@ test("ignore assets without resources", () => {
 
   expect(stack).toMatchCdkSnapshot({
     ignoreAssets: true,
+  });
+});
+
+test("ignore current version", () => {
+  const stack = new Stack();
+
+  const lf = new Function(stack, "Function", {
+    code: Code.fromAsset(path.join(__dirname, "fixtures", "lambda")),
+    runtime: Runtime.NODEJS_12_X,
+    handler: "index.handler",
+  });
+  lf.currentVersion.grantInvoke(new AccountPrincipal("123456789012"));
+
+  new CfnOutput(stack, "CurrentVersion", {
+    value: lf.currentVersion.functionArn,
+  });
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+    ignoreCurrentVersion: true,
   });
 });
