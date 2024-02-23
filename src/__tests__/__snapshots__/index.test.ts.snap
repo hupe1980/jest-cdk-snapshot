@@ -144,7 +144,7 @@ exports[`ignore current version 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "FunctionCurrentVersion4E2B226151c1faf27d0d163dcd41fb04818fca79",
+            "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "Version",
           ],
         },

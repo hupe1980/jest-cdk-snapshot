@@ -62,15 +62,32 @@ export const toMatchCdkSnapshot = function (
   return propertyMatchers ? matcher(stack, propertyMatchers) : matcher(stack);
 };
 
-const maskCurrentVersionRefs = (tree: Record<string, unknown>): void => {
-  for (const [key, value] of Object.entries(tree)) {
-    if (key === "Ref" && typeof value === "string") {
-      const match = currentVersionRegex.exec(value);
-      if (match) {
-        tree[key] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+const maskCurrentVersionRefs = (tree: unknown): void => {
+  if (tree == null) {
+    return;
+  }
+  if (Array.isArray(tree)) {
+    for (let i = 0; i < tree.length; i++) {
+      const value = tree[i];
+      if (typeof value === "string") {
+        const match = currentVersionRegex.exec(value);
+        if (match) {
+          tree[i] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        }
+      } else if (typeof value === "object") {
+        maskCurrentVersionRefs(value);
       }
-    } else if (typeof value === "object" && value !== null) {
-      maskCurrentVersionRefs(value as Record<string, unknown>);
+    }
+  } else if (typeof tree === "object") {
+    for (const [key, value] of Object.entries(tree)) {
+      if (key === "Ref" && typeof value === "string") {
+        const match = currentVersionRegex.exec(value);
+        if (match) {
+          tree[key] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        }
+      } else if (typeof value === "object") {
+        maskCurrentVersionRefs(value as Record<string, unknown>);
+      }
     }
   }
 };
