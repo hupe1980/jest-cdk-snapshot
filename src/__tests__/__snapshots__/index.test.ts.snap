@@ -137,6 +137,21 @@ exports[`ignore current version 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
+    "FunctionAliascurrentBA7922F5": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "Function76856677",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Version",
+          ],
+        },
+        "Name": "current",
+      },
+      "Type": "AWS::Lambda::Alias",
+    },
     "FunctionCurrentVersion4E2B2261xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
       "Properties": {
         "FunctionName": {

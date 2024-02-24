@@ -107,6 +107,7 @@ test("ignore current version", () => {
     handler: "index.handler",
   });
   lf.currentVersion.grantInvoke(new AccountPrincipal("123456789012"));
+  lf.addAlias("current", {});
 
   new CfnOutput(stack, "CurrentVersion", {
     value: lf.currentVersion.functionArn,

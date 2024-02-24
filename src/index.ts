@@ -62,15 +62,39 @@ export const toMatchCdkSnapshot = function (
   return propertyMatchers ? matcher(stack, propertyMatchers) : matcher(stack);
 };
 
-const maskCurrentVersionRefs = (tree: Record<string, unknown>): void => {
-  for (const [key, value] of Object.entries(tree)) {
-    if (key === "Ref" && typeof value === "string") {
-      const match = currentVersionRegex.exec(value);
-      if (match) {
-        tree[key] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+const maskCurrentVersionRefs = (tree: unknown): void => {
+  if (tree == null) {
+    return;
+  }
+  if (Array.isArray(tree)) {
+    for (let i = 0; i < tree.length; i++) {
+      const value = tree[i];
+      if (typeof value === "string") {
+        const match = currentVersionRegex.exec(value);
+        if (match) {
+          tree[i] = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        }
+      } else if (typeof value === "object") {
+        maskCurrentVersionRefs(value);
       }
-    } else if (typeof value === "object" && value !== null) {
-      maskCurrentVersionRefs(value as Record<string, unknown>);
+    }
+  } else if (typeof tree === "object") {
+    for (const [key, value] of Object.entries(tree)) {
+      const keyMatch = currentVersionRegex.exec(key);
+      if (keyMatch) {
+        const newKey = `${keyMatch[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        tree[newKey] = value;
+        delete tree[key];
+      }
+
+      if (typeof value === "string") {
+        const valueMatch = currentVersionRegex.exec(value);
+        if (valueMatch) {
+          tree[key] = `${valueMatch[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
+        }
+      } else if (typeof value === "object") {
+        maskCurrentVersionRefs(value as Record<string, unknown>);
+      }
     }
   }
 };
@@ -120,15 +144,6 @@ const convertStack = (stack: Stack, options: Options = {}) => {
   }
 
   if (ignoreCurrentVersion && template.Resources) {
-    for (const [key, resource] of Object.entries(template.Resources)) {
-      const match = currentVersionRegex.exec(key);
-      if (match) {
-        const newKey = `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
-        template.Resources[newKey] = resource;
-        delete template.Resources[key];
-      }
-    }
-
     maskCurrentVersionRefs(template);
   }
 
