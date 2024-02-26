@@ -1,4 +1,5 @@
-import { App, Stack, StageSynthesisOptions } from "aws-cdk-lib";
+import { Template } from "aws-cdk-lib/assertions";
+import { Stack, StageSynthesisOptions } from "aws-cdk-lib";
 import { toMatchSnapshot } from "jest-snapshot";
 import * as jsYaml from "js-yaml";
 
@@ -12,6 +13,21 @@ declare global {
 }
 
 type Options = StageSynthesisOptions & {
+  /**
+   * @deprecated No effect. Please remove this, there is no alternative.
+   */
+  readonly skipValidation?: boolean;
+
+  /**
+   * @deprecated No effect. Please remove this, there is no alternative.
+   */
+  readonly validateOnSynthesis?: boolean;
+
+  /**
+   * @deprecated No effect. Please remove this, there is no alternative.
+   */
+  readonly force?: boolean;
+
   /**
    * Output snapshots in YAML (instead of JSON)
    */
@@ -110,7 +126,11 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     ...synthOptions
   } = options;
 
-  const template = App.of(stack)?.synth(synthOptions).stacks[0].template ?? {};
+  if (Object.keys(synthOptions).length > 0) {
+    console.warn("Synth options are no longer supported. Please remove them.");
+  }
+
+  const template = Template.fromStack(stack, {}).toJSON();
 
   if (ignoreBootstrapVersion) {
     if (template.Parameters) {
