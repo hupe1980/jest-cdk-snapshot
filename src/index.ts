@@ -57,7 +57,7 @@ type Options = StageSynthesisOptions & {
 
   /**
    * Excludes CDK v2-managed bootstrap versions.
-   * Defaults to `false`.
+   * Defaults to `true`.
    */
   ignoreBootstrapVersion?: boolean;
 };
