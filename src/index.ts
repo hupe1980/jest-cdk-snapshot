@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-type Options = StageSynthesisOptions & {
+export type Options = StageSynthesisOptions & {
   /**
    * @deprecated No effect. Please remove this, there is no alternative.
    */
