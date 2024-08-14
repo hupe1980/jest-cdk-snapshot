@@ -60,6 +60,11 @@ export type Options = StageSynthesisOptions & {
    * Defaults to `true`.
    */
   ignoreBootstrapVersion?: boolean;
+
+  /**
+   * Ignore Metadata
+   */
+  ignoreMetadata?: boolean;
 };
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
@@ -68,7 +73,7 @@ export const toMatchCdkSnapshot = function (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
   received: Stack,
-  options: Options = {},
+  options: Options = {}
 ) {
   const matcher = toMatchSnapshot.bind(this);
   const { propertyMatchers, ...convertOptions } = options;
@@ -121,6 +126,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     ignoreAssets = false,
     ignoreBootstrapVersion = true,
     ignoreCurrentVersion = false,
+    ignoreMetadata = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
@@ -184,6 +190,19 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     }
   }
 
+  if (ignoreMetadata && template.Metadata) {
+    delete template.Metadata;
+  }
+
+  if (ignoreMetadata && template.Resources) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Object.values(template.Resources).forEach((resource: any) => {
+      if (resource?.Metadata) {
+        delete resource.Metadata;
+      }
+    });
+  }
+
   return yaml ? jsYaml.safeDump(template) : template;
 };
 
@@ -193,6 +212,6 @@ if (expect !== undefined) {
   console.error(
     "Unable to find Jest's global expect." +
       "\nPlease check you have added jest-cdk-snapshot correctly." +
-      "\nSee https://github.com/hupe1980/jest-cdk-snapshot for help.",
+      "\nSee https://github.com/hupe1980/jest-cdk-snapshot for help."
   );
 }

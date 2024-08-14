@@ -177,6 +177,27 @@ test('propertyMatchers', () => {
 });
 ```
 
+## Ignore Metadata
+
+With this enabled CloudFormation metadata both on Stack and Resource level will be ignored.
+Metadata is often added by Aspects or other libraries.
+
+```typescript
+import { Stack } from 'aws-cdk-lib/core';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import 'jest-cdk-snapshot';
+
+test('default setup', () => {
+  const stack = new Stack();
+
+  new Bucket(stack, 'Foo');
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreMetadata: true,
+  });
+});
+```
+
 ## License
 
 [MIT](LICENSE)
