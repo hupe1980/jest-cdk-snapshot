@@ -73,7 +73,7 @@ export const toMatchCdkSnapshot = function (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
   received: Stack,
-  options: Options = {}
+  options: Options = {},
 ) {
   const matcher = toMatchSnapshot.bind(this);
   const { propertyMatchers, ...convertOptions } = options;
@@ -212,6 +212,6 @@ if (expect !== undefined) {
   console.error(
     "Unable to find Jest's global expect." +
       "\nPlease check you have added jest-cdk-snapshot correctly." +
-      "\nSee https://github.com/hupe1980/jest-cdk-snapshot for help."
+      "\nSee https://github.com/hupe1980/jest-cdk-snapshot for help.",
   );
 }
