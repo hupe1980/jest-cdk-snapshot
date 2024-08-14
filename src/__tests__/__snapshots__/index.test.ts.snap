@@ -205,6 +205,18 @@ exports[`ignore current version 1`] = `
 }
 `;
 
+exports[`metadata should not be included if skipped 1`] = `
+{
+  "Resources": {
+    "FooDFE0DD70": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
+
 exports[`multiple resources 1`] = `
 {
   "Resources": {

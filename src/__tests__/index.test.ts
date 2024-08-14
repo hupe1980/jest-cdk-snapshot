@@ -1,4 +1,11 @@
-import { CfnOutput, CfnParameter, Stack } from "aws-cdk-lib";
+import {
+  Aspects,
+  CfnOutput,
+  CfnParameter,
+  CfnResource,
+  IAspect,
+  Stack,
+} from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { AccountPrincipal } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
@@ -141,5 +148,36 @@ test("show bootstrap version if ignoreBootstrapVersion is explicitly false", () 
 
   expect(stack).toMatchCdkSnapshot({
     ignoreBootstrapVersion: false,
+  });
+});
+
+test("metadata should not be included if skipped", () => {
+  const stack = new Stack();
+  // There is different methods and places where metadata can be added. We want to ensure none leave a trace
+  // adding metadata via Aspect and cfnOptions
+  const dataAdder: IAspect = {
+    visit: (node) => {
+      if (CfnResource.isCfnResource(node)) {
+        node.cfnOptions.metadata = {
+          ...node.cfnOptions.metadata,
+          ["dummyKey"]: "dummyValue",
+        };
+      }
+    },
+  };
+  Aspects.of(stack).add(dataAdder);
+
+  // Add metadata on Stack level
+  stack.addMetadata("stackMeta", "dummy");
+
+  // Add metadata on different resource levels
+  const bucket = new Bucket(stack, "Foo");
+  bucket.node.addMetadata("nodeMetadata", "dummy");
+  if (bucket.node.defaultChild) {
+    bucket.node.defaultChild.node.addMetadata("resourceMetadata", "dummy");
+  }
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreMetadata: true,
   });
 });
