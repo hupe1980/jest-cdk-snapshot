@@ -198,6 +198,17 @@ test('default setup', () => {
 });
 ```
 
+## Ignore Resource Tags
+
+With this enabled, tags on all resources that have tags configured are ignored.
+This can be useful in situations where tags contain changing informatione like the commit or a pipeline id.
+
+```typescript
+  expect(stack).toMatchCdkSnapshot({
+    ignoreTags: true,
+  });
+```
+
 ## License
 
 [MIT](LICENSE)

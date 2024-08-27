@@ -65,6 +65,11 @@ export type Options = StageSynthesisOptions & {
    * Ignore Metadata
    */
   ignoreMetadata?: boolean;
+
+  /**
+   * Ignore Tags on resources
+   */
+  ignoreTags?: boolean;
 };
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
@@ -127,6 +132,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     ignoreBootstrapVersion = true,
     ignoreCurrentVersion = false,
     ignoreMetadata = false,
+    ignoreTags = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
@@ -199,6 +205,15 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     Object.values(template.Resources).forEach((resource: any) => {
       if (resource?.Metadata) {
         delete resource.Metadata;
+      }
+    });
+  }
+
+  if (ignoreTags && template.Resources) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Object.values(template.Resources).forEach((resource: any) => {
+      if (resource?.Properties?.Tags) {
+        delete resource.Properties.Tags;
       }
     });
   }
