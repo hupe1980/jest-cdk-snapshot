@@ -5,6 +5,7 @@ import {
   CfnResource,
   IAspect,
   Stack,
+  Tags,
 } from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { AccountPrincipal } from "aws-cdk-lib/aws-iam";
@@ -179,5 +180,16 @@ test("metadata should not be included if skipped", () => {
 
   expect(stack).toMatchCdkSnapshot({
     ignoreMetadata: true,
+  });
+});
+
+test("tags should not be included if skipped", () => {
+  const stack = new Stack();
+  const bucket = new Bucket(stack, "Foo");
+
+  Tags.of(bucket).add("dummy", "test");
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreTags: true,
   });
 });

@@ -314,6 +314,19 @@ exports[`subsetResourceTypes 1`] = `
 }
 `;
 
+exports[`tags should not be included if skipped 1`] = `
+{
+  "Resources": {
+    "FooDFE0DD70": {
+      "DeletionPolicy": "Retain",
+      "Properties": {},
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
+
 exports[`yaml setup 1`] = `
 "Resources:
   FooDFE0DD70:
