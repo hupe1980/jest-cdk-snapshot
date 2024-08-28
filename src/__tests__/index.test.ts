@@ -13,6 +13,7 @@ import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import * as path from "path";
 import "../index";
+import { ContainerImage, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
 
 test("default setup", () => {
   const stack = new Stack();
@@ -100,6 +101,26 @@ test("ignore assets without resources", () => {
   const stack = new Stack();
 
   new CfnParameter(stack, "Param");
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+  });
+});
+
+test("ignore assets including container images", () => {
+  const stack = new Stack();
+
+  const taskDefinition = new FargateTaskDefinition(stack, "TaskDefinition", {
+    cpu: 2048,
+    memoryLimitMiB: 6144,
+  });
+
+  taskDefinition.addContainer("Container", {
+    image: ContainerImage.fromAsset(
+      path.join(__dirname, "fixtures", "docker"),
+      {},
+    ),
+  });
 
   expect(stack).toMatchCdkSnapshot({
     ignoreAssets: true,
