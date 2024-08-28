@@ -175,6 +175,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
 
       if (resource?.Properties?.ContainerDefinitions) {
         resource?.Properties?.ContainerDefinitions.forEach(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (definition: any) => {
             definition.Image = anyObject;
           },
