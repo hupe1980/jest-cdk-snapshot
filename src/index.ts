@@ -172,6 +172,14 @@ const convertStack = (stack: Stack, options: Options = {}) => {
       if (resource?.Properties?.Code) {
         resource.Properties.Code = anyObject;
       }
+
+      if (resource?.Properties?.ContainerDefinitions) {
+        resource?.Properties?.ContainerDefinitions.forEach(
+          (definition: any) => {
+            definition.Image = anyObject;
+          },
+        );
+      }
     });
   }
 
