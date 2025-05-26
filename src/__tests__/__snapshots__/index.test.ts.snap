@@ -373,7 +373,6 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
           },
           "Type": "S3",
         },
-        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
@@ -501,7 +500,7 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
                     "Name": "Synth_Output",
                   },
                 ],
-                "Name": "Function_Code",
+                "Name": "FileAsset1",
                 "RoleArn": {
                   "Fn::GetAtt": [
                     "CodePipelineCodeBuildActionRole5942A84B",
@@ -760,7 +759,7 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
         "Cache": {
           "Type": "NO_CACHE",
         },
-        "Description": "Pipeline step Default/Pipeline/Assets/Function_Code",
+        "Description": "Pipeline step Default/Pipeline/Assets/FileAsset1",
         "EncryptionKey": "alias/aws/s3",
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
@@ -781,7 +780,7 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
   "phases": {
     "install": {
       "commands": [
-        "npm install -g cdk-assets@latest"
+        "npm install -g cdk-assets@2"
       ]
     },
     "build": {
@@ -805,6 +804,28 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "Service": "codebuild.amazonaws.com",
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
               },
             },
           ],
@@ -1344,9 +1365,19 @@ exports[`pipeline cdk-assets should be ignored 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::GetAtt": [
-                    "CodePipelineRoleCF80F684",
-                    "Arn",
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
                   ],
                 },
               },

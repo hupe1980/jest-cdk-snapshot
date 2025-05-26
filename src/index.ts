@@ -140,7 +140,19 @@ const maskPipelineCDKAssets = (tree: unknown): void => {
   if (Array.isArray(tree)) {
     for (let i = 0; i < tree.length; i++) {
       const value = tree[i];
-      if (typeof value === "object") {
+      if (typeof value === "string") {
+        const valueMatch = pipelineCdkAssetsRegex.exec(value);
+        if (valueMatch) {
+          const matchRegion = matchRegionInAssetRegex.exec(valueMatch[2]);
+          const assetID =
+            matchRegion && matchRegion[1] ? matchRegion[1] : "<ASSET_ID>";
+
+          tree[i] = value.replace(
+            pipelineCdkAssetsRegex,
+            'cdk-assets --path "<$1>" --verbose publish "' + assetID + '"',
+          );
+        }
+      } else if (typeof value === "object") {
         maskPipelineCDKAssets(value);
       }
     }
