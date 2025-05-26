@@ -5,8 +5,10 @@ import {
   CfnResource,
   IAspect,
   Stack,
+  Stage,
   Tags,
 } from "aws-cdk-lib";
+import { Construct } from "constructs";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { AccountPrincipal } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
@@ -14,6 +16,11 @@ import { Topic } from "aws-cdk-lib/aws-sns";
 import * as path from "path";
 import "../index";
 import { ContainerImage, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
+import {
+  CodePipeline,
+  CodePipelineSource,
+  ShellStep,
+} from "aws-cdk-lib/pipelines";
 
 test("default setup", () => {
   const stack = new Stack();
@@ -212,5 +219,37 @@ test("tags should not be included if skipped", () => {
 
   expect(stack).toMatchCdkSnapshot({
     ignoreTags: true,
+  });
+});
+
+test("pipeline cdk-assets should be ignored", () => {
+  const stack = new Stack();
+
+  const pipeline = new CodePipeline(stack, "CodePipeline", {
+    synth: new ShellStep("Synth", {
+      input: CodePipelineSource.connection("owner/repo", "main", {
+        connectionArn: "arn",
+      }),
+      commands: ["npm install", "npm run build"],
+    }),
+  });
+
+  // Add a dummy stage to trigger asset publishing
+  class AppStage extends Stage {
+    constructor(scope: Construct, id: string) {
+      super(scope, id);
+
+      const innerStack = new Stack(this, "InnerStack");
+      new Function(innerStack, "Function", {
+        code: Code.fromAsset(path.join(__dirname, "fixtures", "lambda")),
+        runtime: Runtime.NODEJS_20_X,
+        handler: "index.handler",
+      });
+    }
+  }
+
+  pipeline.addStage(new AppStage(stack, "AppStage"));
+  expect(stack).toMatchCdkSnapshot({
+    ignorePipelineAssets: true,
   });
 });

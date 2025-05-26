@@ -70,9 +70,17 @@ export type Options = StageSynthesisOptions & {
    * Ignore Tags on resources
    */
   ignoreTags?: boolean;
+
+  /**
+   * Ignore pipeline assets
+   */
+  ignorePipelineAssets?: boolean;
 };
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
+const pipelineCdkAssetsRegex =
+  /cdk-assets\s+--path\s+\\"([^\\/]+)\/.+?assets\.json\\"\s+--verbose\s+publish\s+\\"(.+?)\\"/;
+const matchRegionInAssetRegex = /:(.*)$/;
 
 export const toMatchCdkSnapshot = function (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -125,6 +133,50 @@ const maskCurrentVersionRefs = (tree: unknown): void => {
   }
 };
 
+const maskPipelineCDKAssets = (tree: unknown): void => {
+  if (tree == null) {
+    return;
+  }
+  if (Array.isArray(tree)) {
+    for (let i = 0; i < tree.length; i++) {
+      const value = tree[i];
+      if (typeof value === "string") {
+        const valueMatch = pipelineCdkAssetsRegex.exec(value);
+        if (valueMatch) {
+          const matchRegion = matchRegionInAssetRegex.exec(valueMatch[2]);
+          const assetID =
+            matchRegion && matchRegion[1] ? matchRegion[1] : "<ASSET_ID>";
+
+          tree[i] = value.replace(
+            pipelineCdkAssetsRegex,
+            'cdk-assets --path "<$1>" --verbose publish "' + assetID + '"',
+          );
+        }
+      } else if (typeof value === "object") {
+        maskPipelineCDKAssets(value);
+      }
+    }
+  } else if (typeof tree === "object") {
+    for (const [key, value] of Object.entries(tree)) {
+      if (typeof value === "string") {
+        const valueMatch = pipelineCdkAssetsRegex.exec(value);
+        if (valueMatch) {
+          const matchRegion = matchRegionInAssetRegex.exec(valueMatch[2]);
+          const assetID =
+            matchRegion && matchRegion[1] ? matchRegion[1] : "<ASSET_ID>";
+
+          tree[key] = value.replace(
+            pipelineCdkAssetsRegex,
+            'cdk-assets --path "<$1>" --verbose publish "' + assetID + '"',
+          );
+        }
+      } else if (typeof value === "object") {
+        maskPipelineCDKAssets(value as Record<string, unknown>);
+      }
+    }
+  }
+};
+
 const convertStack = (stack: Stack, options: Options = {}) => {
   const {
     yaml,
@@ -133,6 +185,7 @@ const convertStack = (stack: Stack, options: Options = {}) => {
     ignoreCurrentVersion = false,
     ignoreMetadata = false,
     ignoreTags = false,
+    ignorePipelineAssets = false,
     subsetResourceTypes,
     subsetResourceKeys,
     ...synthOptions
@@ -186,6 +239,10 @@ const convertStack = (stack: Stack, options: Options = {}) => {
 
   if (ignoreCurrentVersion && template.Resources) {
     maskCurrentVersionRefs(template);
+  }
+
+  if (ignorePipelineAssets && template.Resources) {
+    maskPipelineCDKAssets(template);
   }
 
   if (subsetResourceTypes && template.Resources) {
