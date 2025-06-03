@@ -253,3 +253,46 @@ test("pipeline cdk-assets should be ignored", () => {
     ignorePipelineAssets: true,
   });
 });
+
+test("pipeline cdk-assets should be ignored with stacks deployed in multi-regions", () => {
+  const stack = new Stack(undefined, "Stack", {
+    env: {
+      region: "region",
+      account: "123456789012",
+    },
+  });
+
+  const pipeline = new CodePipeline(stack, "CodePipeline", {
+    synth: new ShellStep("Synth", {
+      input: CodePipelineSource.connection("owner/repo", "main", {
+        connectionArn: "arn",
+      }),
+      commands: ["npm install", "npm run build"],
+    }),
+  });
+
+  // Deploy an app Stack in two different regions
+  class AppStage extends Stage {
+    constructor(scope: Construct, id: string) {
+      super(scope, id);
+
+      ["region1", "region2"].forEach((region) => {
+        const innerStack = new Stack(this, `InnerStack${region}`, {
+          env: {
+            region: region,
+          },
+        });
+        new Function(innerStack, "Function", {
+          code: Code.fromAsset(path.join(__dirname, "fixtures", "lambda")),
+          runtime: Runtime.NODEJS_20_X,
+          handler: "index.handler",
+        });
+      });
+    }
+  }
+
+  pipeline.addStage(new AppStage(stack, "AppStage"));
+  expect(stack).toMatchCdkSnapshot({
+    ignorePipelineAssets: true,
+  });
+});

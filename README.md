@@ -209,6 +209,61 @@ This can be useful in situations where tags contain changing informatione like t
   });
 ```
 
+## Ignore Pipeline Assets
+
+With this enabled, pipeline cdk assets will get predictable paths and publish IDs
+
+```typescript
+import { Stack, Stage, Tags } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+import * as path from 'path';
+import 'jest-cdk-snapshot';
+import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
+
+test('pipeline cdk-assets should be ignored', () => {
+  const stack = new Stack();
+
+  const pipeline = new CodePipeline(stack, 'CodePipeline', {
+    synth: new ShellStep('Synth', {
+      input: CodePipelineSource.connection('owner/repo', 'main', {
+        connectionArn: 'arn',
+      }),
+      commands: ['npm install', 'npm run build'],
+    }),
+  });
+
+  // Add a dummy stage to trigger asset publishing
+  class AppStage extends Stage {
+    constructor(scope: Construct, id: string) {
+      super(scope, id);
+
+      const innerStack = new Stack(this, 'InnerStack');
+      new Function(innerStack, 'Function', {
+        code: Code.fromAsset(path.join(__dirname, 'fixtures', 'lambda')),
+        runtime: Runtime.NODEJS_20_X,
+        handler: 'index.handler',
+      });
+    }
+  }
+
+  pipeline.addStage(new AppStage(stack, 'AppStage'));
+  expect(stack).toMatchCdkSnapshot({
+    ignorePipelineAssets: true,
+  });
+}); 
+```
+
+This will result in:
+
+```json
+"build": {
+  "commands": [
+    "cdk-assets --path \"<assembly-Default-AppStage>\" --verbose publish \"current_account-current_region\""
+  ]
+}
+```
+
 ## License
 
 [MIT](LICENSE)
