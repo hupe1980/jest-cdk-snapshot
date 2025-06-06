@@ -79,7 +79,7 @@ export type Options = StageSynthesisOptions & {
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/;
 const pipelineCdkAssetsRegex =
-  /cdk-assets\s+--path\s+\\"([^\\/]+)\/.+?assets\.json\\"\s+--verbose\s+publish\s+\\"(.+?)\\"/;
+  /cdk-assets\s+--path\s+\\"([^\\/]+)\/.+?assets\.json\\"\s+--verbose\s+publish\s+\\"(.+?)\\"/g;
 const matchRegionInAssetRegex = /:(.*)$/;
 
 export const toMatchCdkSnapshot = function (
@@ -141,17 +141,19 @@ const maskPipelineCDKAssets = (tree: unknown): void => {
     for (let i = 0; i < tree.length; i++) {
       const value = tree[i];
       if (typeof value === "string") {
-        const valueMatch = pipelineCdkAssetsRegex.exec(value);
-        if (valueMatch) {
+        const valueMatches = [...value.matchAll(pipelineCdkAssetsRegex)];
+        let currentValue = value;
+        valueMatches.forEach((valueMatch) => {
           const matchRegion = matchRegionInAssetRegex.exec(valueMatch[2]);
           const assetID =
             matchRegion && matchRegion[1] ? matchRegion[1] : "<ASSET_ID>";
 
-          tree[i] = value.replace(
-            pipelineCdkAssetsRegex,
-            'cdk-assets --path "<$1>" --verbose publish "' + assetID + '"',
+          currentValue = currentValue.replace(
+            valueMatch[0],
+            `cdk-assets --path "<${valueMatch[1]}>" --verbose publish "${assetID}"`,
           );
-        }
+        });
+        tree[i] = currentValue;
       } else if (typeof value === "object") {
         maskPipelineCDKAssets(value);
       }
@@ -159,17 +161,19 @@ const maskPipelineCDKAssets = (tree: unknown): void => {
   } else if (typeof tree === "object") {
     for (const [key, value] of Object.entries(tree)) {
       if (typeof value === "string") {
-        const valueMatch = pipelineCdkAssetsRegex.exec(value);
-        if (valueMatch) {
+        const valueMatches = [...value.matchAll(pipelineCdkAssetsRegex)];
+        let currentValue = value;
+        valueMatches.forEach((valueMatch) => {
           const matchRegion = matchRegionInAssetRegex.exec(valueMatch[2]);
           const assetID =
             matchRegion && matchRegion[1] ? matchRegion[1] : "<ASSET_ID>";
 
-          tree[key] = value.replace(
-            pipelineCdkAssetsRegex,
-            'cdk-assets --path "<$1>" --verbose publish "' + assetID + '"',
+          currentValue = currentValue.replace(
+            valueMatch[0],
+            `cdk-assets --path "<${valueMatch[1]}>" --verbose publish "${assetID}"`,
           );
-        }
+        });
+        tree[key] = currentValue;
       } else if (typeof value === "object") {
         maskPipelineCDKAssets(value as Record<string, unknown>);
       }
